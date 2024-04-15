@@ -179,6 +179,85 @@ class _HomePageState extends State<HomePage> {
                   );
               }),
             ),
+            Container(
+              padding: const EdgeInsets.only(left: 16, bottom: 20, top: 20),
+              child: const Text('New Plants', style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18.0,
+              )),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              height: size.height * .5,
+              child: ListView.builder(
+                itemCount: _planTypes.length,
+                  scrollDirection: Axis.vertical,
+                  physics: const BouncingScrollPhysics(),
+                  itemBuilder: (BuildContext context, int index){
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Constants.primaryColor.withOpacity(.1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      height: 80.0,
+                      padding: const EdgeInsets.only(left: 10, top: 10),
+                      margin: const EdgeInsets.only(bottom: 10, top: 10),
+                      width: size.width,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              Container(
+                                width: 60.0,
+                                height: 60.0,
+                                decoration: BoxDecoration(
+                                  color: Constants.primaryColor.withOpacity(.8),
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 5,
+                                  left:0,
+                                  right: 0,
+                                  child: SizedBox(
+                                    height: 80.0,
+                                    child: Image.asset(_plantsList[index].imageURL),
+                                  ),),
+                              Positioned(
+                                bottom: 5,
+                                  left: 80,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(_plantsList[index].category),
+                                      Text(_plantsList[index].plantName, style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Constants.blackColor,
+                                      )),
+                                    ],
+                                  ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: Text(r'$' + _plantsList[index].price.toString(), style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0,
+                              color: Constants.primaryColor,
+                            ),),
+                          )
+
+                        ],
+                      ),
+
+                    );
+              })
+            )
           ],
         ),
       )
