@@ -73,6 +73,7 @@ class _RootPageState extends State<RootPage> {
         // Todo: Aggregate scanner in the floatingButton
         shape: const CircleBorder(),
         backgroundColor: Constants.primaryColor,
+        child: Image.asset('assets/images/code-scan-two.png', height: 30.0,),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: AnimatedBottomNavigationBar(

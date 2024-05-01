@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage> {
     int selectedIndex = 0;
     Size size = MediaQuery.of(context).size;
 
-    // Todo: Make the object for the model
+
     List<Plant> _plantsList = Plant.plantList;
 
     // Plants category
