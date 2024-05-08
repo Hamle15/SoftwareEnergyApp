@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:integrador/Providers/plant_provider.dart';
 import 'package:integrador/constants.dart';
 import 'package:integrador/models/plants.dart';
+import 'package:provider/provider.dart';
 
 class DetailPage extends StatefulWidget {
   final int plantId;
@@ -16,16 +18,19 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
   bool isFavorite = false;
+  bool isFavoriteChanged = false; // Variable para verificar si el estado de favoritos ha cambiado
 
   @override
   void initState() {
     super.initState();
-    isFavorite = Plant.plantList[widget.plantId].isFavorated;
+    final plantProvider = Provider.of<PlantProvider>(context, listen: false);
+    isFavorite = plantProvider.plantsList[widget.plantId].isFavorated;
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Plant> _plantsList = Plant.plantList;
+    final plantProvider = Provider.of<PlantProvider>(context); // Obtén el Provider
+    Plant plant = plantProvider.plantsList[widget.plantId];
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -40,7 +45,12 @@ class _DetailPageState extends State<DetailPage> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
+                    if (isFavoriteChanged) {
+                      Navigator.pop(context, isFavorite); // Pasa el estado de favoritos actualizado a FavoritePage
+                    } else {
+                      Navigator.pop(context); // Si no ha cambiado, simplemente cierra DetailPage
+                    }
+
                   },
                   child: Container(
                     height: 40,
@@ -55,6 +65,7 @@ class _DetailPageState extends State<DetailPage> {
                   onTap: () {
                     setState(() {
                       isFavorite = !isFavorite;
+                      isFavoriteChanged = true; // Marca que el estado de favoritos ha cambiado
                     });
                     widget.updateFavoriteStatus(isFavorite);
                   },
@@ -90,7 +101,7 @@ class _DetailPageState extends State<DetailPage> {
                       child: SizedBox(
                         height: 300,
                         child:
-                            Image.asset(_plantsList[widget.plantId].imageURL),
+                            Image.asset(plant.imageURL),
                       ),
                     ),
                     Positioned(
@@ -104,18 +115,18 @@ class _DetailPageState extends State<DetailPage> {
                             children: [
                               PlantFeatures(
                                 title: "Size",
-                                plantFatures: _plantsList[widget.plantId].size,
+                                plantFatures: plant.size,
                               ),
                               PlantFeatures(
                                 title: "Humidity",
-                                plantFatures: _plantsList[widget.plantId]
+                                plantFatures: plant
                                     .humidity
                                     .toString(),
                               ),
                               PlantFeatures(
                                 title: "Temperature",
                                 plantFatures:
-                                    _plantsList[widget.plantId].temperature,
+                                plant.temperature,
                               ),
                             ],
                           ),
@@ -147,7 +158,7 @@ class _DetailPageState extends State<DetailPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              _plantsList[widget.plantId].plantName,
+                              plant.plantName,
                               style: TextStyle(
                                   color: Constants.primaryColor,
                                   fontWeight: FontWeight.bold,
@@ -158,7 +169,7 @@ class _DetailPageState extends State<DetailPage> {
                             ),
                             Text(
                               r"$" +
-                                  _plantsList[widget.plantId].price.toString(),
+                                  plant.price.toString(),
                               style: TextStyle(
                                 color: Constants.blackColor,
                                 fontSize: 24.0,
@@ -170,7 +181,7 @@ class _DetailPageState extends State<DetailPage> {
                         Row(
                           children: [
                             Text(
-                              _plantsList[widget.plantId].rating.toString(),
+                              plant.rating.toString(),
                               style: TextStyle(
                                 fontSize: 30.0,
                                 color: Constants.primaryColor,
@@ -190,7 +201,7 @@ class _DetailPageState extends State<DetailPage> {
                     ),
                     Expanded(
                         child: Text(
-                          _plantsList[widget.plantId].decription,
+                          plant.decription,
                           textAlign: TextAlign.justify,
                           style: TextStyle(
                               height: 1.5,

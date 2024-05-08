@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:integrador/Providers/plant_provider.dart';
+import 'package:provider/provider.dart';
 import './ui/root_page.dart';
 
 void main() {
@@ -11,10 +13,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-
-      home: RootPage(),
+    return ChangeNotifierProvider(
+      create: (context) => PlantProvider(),
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: RootPage(),
+      ),
     );
   }
 }
