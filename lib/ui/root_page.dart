@@ -26,7 +26,7 @@ class _RootPageState extends State<RootPage> {
     return [
       const HomePage(),
       FavoritePage(favoritedPlants: favorities, ),
-      CartPage(addedToCartPlants: myCart,),
+      DynamicForm(),
       const ProfilePage(),
     ];
   }
