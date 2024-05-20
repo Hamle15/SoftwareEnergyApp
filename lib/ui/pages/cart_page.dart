@@ -18,6 +18,7 @@ class _DynamicFormState extends State<DynamicForm> {
       List.generate(11, (index) => TextEditingController());
   int _currentPage = 0;
   final int _totalPages = 3;
+  final String email = "hamletcruzpirazan@gmail.com";
 
   final List<IconData> icons = [
     Icons.email,
@@ -36,151 +37,189 @@ class _DynamicFormState extends State<DynamicForm> {
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      int totalDevices = int.parse(controllers[1].text);
-      int deskCompNum2 = int.parse(controllers[2].text);
-      int numberServers5 = int.parse(controllers[5].text);
-      int numberLaptops8 = int.parse(controllers[8].text);
+      if (_allFieldsFilled()) {
+        try {
 
-      int totalSum = deskCompNum2 + numberServers5 + numberLaptops8;
+          int totalDevices = int.parse(controllers[0].text);
+          int deskCompNum2 = int.parse(controllers[1].text);
+          int numberServers5 = int.parse(controllers[6].text);
+          int numberLaptops8 = int.parse(controllers[9].text);
 
-      if (totalSum != totalDevices) {
+          int totalSum = deskCompNum2 + numberServers5 + numberLaptops8;
+
+          if (totalSum != totalDevices) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Error: los dispositivos no coinciden')),
+            );
+            return;
+          }
+          Map<String, dynamic> formDataJson = {
+            "emailUser": email,
+            "allDevicesNum1": controllers[0].text,
+            "deskCompNum2": controllers[1].text,
+            "hoursPerDayDeskComp3": controllers[2].text,
+            "avgYearsUsageDekComp4": controllers[3].text,
+            "numberServers5": controllers[4].text,
+            "avgHoursPerDayUsageServ6": controllers[5].text,
+            "avgYearsUsageServ7": controllers[6].text,
+            "numberLaptops8": controllers[7].text,
+            "avgHoursPerDayUsageLaptop9": controllers[8].text,
+            "avgYearsUsageLaptop10": controllers[9].text,
+            "energyConsumedByBranchW11": controllers[10].text,
+          };
+
+          FormModel formData = FormModel.fromJson(formDataJson);
+
+          await ApiService.sendData(formData).then((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Datos enviados correctamente')),
+            );
+          }).catchError((error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Error al enviar los datos: $error')),
+            );
+          });
+        } catch (e) {
+          // Error de formato en los datos
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error de formato en los datos')),
+          );
+        }
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: los dispositivos no coinciden')),
+          SnackBar(content: Text('Por favor, llene todos los campos')),
         );
-        return;
       }
-      Map<String, dynamic> formDataJson = {
-        "emailUser": controllers[0].text,
-        "allDevicesNum1": controllers[1].text,
-        "deskCompNum2": controllers[2].text,
-        "hoursPerDayDeskComp3": controllers[3].text,
-        "avgYearsUsageDekComp4": controllers[4].text,
-        "numberServers5": controllers[5].text,
-        "avgHoursPerDayUsageServ6": controllers[6].text,
-        "avgYearsUsageServ7": controllers[7].text,
-        "numberLaptops8": controllers[8].text,
-        "avgHoursPerDayUsageLaptop9": controllers[9].text,
-        "avgYearsUsageLaptop10": controllers[10].text,
-        "energyConsumedByBranchW11": controllers[11].text
-      };
-
-      FormModel formData = FormModel.fromJson(formDataJson);
-      print(formDataJson);
-
-      await ApiService.sendData(formData).then((_) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Datos enviados correctamente')),
-        );
-      }).catchError((error) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al enviar los datos: $error')),
-        );
-      });
     }
   }
 
+  bool _allFieldsFilled() {
+    for (var controller in controllers) {
+      if (controller.text.isEmpty) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+
   Widget build(BuildContext context) {
     return Scaffold(
-      body:
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(_totalPages, (index) => buildIndicator(index)),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Column(
+            children: [
+              Container(
+                margin: EdgeInsets.only(top: 40),
+                child: Image.asset(
+                  'assets/images/code-scan.png',
+                  height: 50,
+                ),
               ),
-            ),
-            SizedBox(height: 10,),
-            Expanded(
-              child: Center(
-                child: Form(
-                  key: _formKey,
-                  child: PageView.builder(
-                    controller: _pageController,
-                    itemCount: _totalPages,
-                    onPageChanged: (int page){
-                      setState(() {
-                        _currentPage = page;
-                      });
-                    }, itemBuilder: (BuildContext context, int index){
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                    _totalPages, (index) => buildIndicator(index)),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Expanded(
+            child: Center(
+              child: Form(
+                key: _formKey,
+                child: PageView.builder(
+                  controller: _pageController,
+                  itemCount: _totalPages,
+                  onPageChanged: (int page) {
+                    setState(() {
+                      _currentPage = page;
+                    });
+                  },
+                  itemBuilder: (BuildContext context, int index) {
                     return buildPage(index);
                   },
-                  ),
                 ),
               ),
             ),
-
-          ],
-        ),
-
-
+          ),
+        ],
+      ),
     );
   }
-
 
   Widget buildPage(int pageIndex) {
     bool isLastPage = pageIndex == (_totalPages - 1);
 
     int startIndex = pageIndex * 4;
-    return  // Centra el contenido del ListView
-      ListView(
-
-        children: [
-          ...List.generate(
-            4,
-                (index) {
-              if (startIndex + index < controllers.length) {
-                return Padding(
-                  padding: EdgeInsets.only(top: 15,right: 10, left:10),
-                    child: TextFormField(
-                      controller: controllers[startIndex + index],
-                      decoration: InputDecoration(
-                        labelText: getPageLabel(startIndex + index),
-                        hintText: getPageHint(startIndex + index),
-                        hintStyle: TextStyle(color: Colors.white),
-                        labelStyle: TextStyle(fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          color: Constants.blackColor,),
-                        prefixIcon: Icon(icons[startIndex + index], color: Constants.primaryColor,),
-                        filled: true,
-                        fillColor: Constants.primaryColor.withOpacity(.1),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide: BorderSide.none
-                        ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 26.0, horizontal: 12.0),
-
-                      ),
+    return // Centra el contenido del ListView
+        ListView(
+      children: [
+        ...List.generate(
+          4,
+          (index) {
+            if (startIndex + index < controllers.length) {
+              return Padding(
+                padding: EdgeInsets.only(top: 15, right: 10, left: 10),
+                child: TextFormField(
+                  controller: controllers[startIndex + index],
+                  decoration: InputDecoration(
+                    labelText: getPageLabel(startIndex + index),
+                    hintText: getPageHint(startIndex + index),
+                    hintStyle: TextStyle(color: Colors.white),
+                    labelStyle: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      color: Constants.blackColor,
                     ),
-
-                );
-              } else {
-                return Container();
-              }
-            },
-          ),
-          if (isLastPage)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: _submitForm,
-                child: Text('Enviar'),
+                    prefixIcon: Icon(
+                      icons[startIndex + index],
+                      color: Constants.primaryColor,
+                    ),
+                    filled: true,
+                    fillColor: Constants.primaryColor.withOpacity(.1),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide.none),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 26.0, horizontal: 12.0),
+                  ),
+                ),
+              );
+            } else {
+              return Container();
+            }
+          },
+        ),
+        if (isLastPage)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              onPressed: _submitForm,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Constants.primaryColor,
+              ),
+              child: Text(
+                'Enviar',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
               ),
             ),
-        ],
-
+          ),
+      ],
     );
   }
-
 
   Widget buildIndicator(int index) {
     return Container(
       width: 10.0,
       height: 10.0,
-      margin: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 30),
+      margin: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 20),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: _currentPage == index ? Colors.blue : Colors.grey,
@@ -222,7 +261,12 @@ class _DynamicFormState extends State<DynamicForm> {
 
   String getPageLabel(int index) {
     Map<int, List<String>> pageLabels = {
-      0: ['Email', 'Devices', 'Numero de computadores', 'Horas en el computador'],
+      0: [
+        'Email',
+        'Devices',
+        'Numero de computadores',
+        'Horas en el computador'
+      ],
       1: [
         'Tiempo promedio de años de los computadores',
         'Numero de servers',
@@ -243,4 +287,5 @@ class _DynamicFormState extends State<DynamicForm> {
       return '';
     }
   }
+
 }

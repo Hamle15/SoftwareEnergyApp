@@ -249,7 +249,7 @@ class _DetailPageState extends State<DetailPage> {
                 ]
               ),
               child: const Center(
-                child: Text("BUY NOW", style: TextStyle(
+                    child: Text("BUY NOW", style: TextStyle(
                   color: Colors.white,
                   fontSize: 20.0,
                 ) ,),
