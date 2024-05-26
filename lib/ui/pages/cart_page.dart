@@ -2,9 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:integrador/ApiServices/api_form.dart';
+import 'package:integrador/ApiServices/form_provider.dart';
 import 'package:integrador/constants.dart';
 import 'package:integrador/models/form.dart';
+import 'package:integrador/models/formToGive.dart';
 import 'package:integrador/ui/pages/widgets/text_field_custom.dart';
+import 'package:provider/provider.dart';
 
 class DynamicForm extends StatefulWidget {
   @override
@@ -68,21 +71,26 @@ class _DynamicFormState extends State<DynamicForm> {
             "energyConsumedByBranchW11": controllers[10].text,
           };
 
-          FormModel formData = FormModel.fromJson(formDataJson);
+          FormModelToGive formData = FormModelToGive.fromJson(formDataJson);
 
           await ApiService.sendData(formData).then((_) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Datos enviados correctamente')),
             );
+            final formProvider = Provider.of<FormProvider>(context, listen: false);
+             formProvider.fetchForms(email);
+
           }).catchError((error) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Error al enviar los datos: $error')),
             );
           });
         } catch (e) {
+          print("holiii");
+          print(e);
           // Error de formato en los datos
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error de formato en los datos')),
+            SnackBar(content: Text('Error de formato en los datos $e' )),
           );
         }
       } else {
@@ -230,7 +238,7 @@ class _DynamicFormState extends State<DynamicForm> {
   String getPageHint(int index) {
     Map<int, List<String>> pageHints = {
       0: [
-        'Número de Teléfono',
+        '20',
         '20',
         'Correo Electrónico',
         'Dirección',
@@ -262,7 +270,7 @@ class _DynamicFormState extends State<DynamicForm> {
   String getPageLabel(int index) {
     Map<int, List<String>> pageLabels = {
       0: [
-        'Email',
+        'Devices',
         'Devices',
         'Numero de computadores',
         'Horas en el computador'

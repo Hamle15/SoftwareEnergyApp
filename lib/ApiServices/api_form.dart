@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:integrador/ApiServices/form_provider.dart';
 import 'package:integrador/models/form.dart';
+import 'package:integrador/models/formToGive.dart';
+import 'package:provider/provider.dart';
 
 class ApiService {
-  static Future<void> sendData(FormModel formData) async {
+  static Future<void> sendData(FormModelToGive formData) async {
     try {
       var url = Uri.parse("http://192.168.1.6:3000/api/form/info");
 
@@ -24,6 +27,7 @@ class ApiService {
 
       String rawResponse = utf8.decode(response.bodyBytes);
       print(rawResponse);
+
     } catch (ex) {
       // Manejo de errores
       String msg = ex.toString();

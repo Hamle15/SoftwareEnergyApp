@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:integrador/ApiServices/form_provider.dart';
+import 'package:integrador/Providers/plant_provider.dart';
 import 'package:integrador/constants.dart';
 import 'package:integrador/models/ResultPropierties.dart';
 import 'package:integrador/models/form.dart';
+import 'package:integrador/models/plants.dart';
 import 'package:integrador/ui/pages/detail_page.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
-class FormWidget extends StatelessWidget {
+class FormWidgetFavorite extends StatelessWidget {
 
   final int index;
-  final List<FormModel> formList;
   final Function(bool) updateFavoriteStatus;
 
-  const FormWidget({
+  const FormWidgetFavorite({
     Key? key,
     required this.index,
     required this.updateFavoriteStatus,
-    required this.formList,
   }) : super(key: key);
 
 
@@ -26,6 +26,10 @@ class FormWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     final formProvider = Provider.of<FormProvider>(context);
+
+
+    List<FormModel> form = List.from(formProvider.formList);
+    form = formProvider.formList.where((form) => form.isFavorated).toList();
 
 
 
@@ -76,7 +80,7 @@ class FormWidget extends StatelessWidget {
     }
 
     ResultProperties resultProperties =
-    getResultProperties(formList[index].percResult);
+    getResultProperties(form[index].percResult);
 
 
     return GestureDetector(
@@ -85,7 +89,7 @@ class FormWidget extends StatelessWidget {
             context,
             PageTransition(
                 child: DetailPage(
-                  formId: formList[index].id,
+                  formId: form[index].id,
                   updateFavoriteStatus: updateFavoriteStatus,
                 ),
                 type: PageTransitionType.bottomToTop,
@@ -121,7 +125,7 @@ class FormWidget extends StatelessWidget {
                   right: 0,
                   child: SizedBox(
                     height: 80.0,
-                    child: Image.asset(resultProperties.image),
+                    child: Image.asset(getImageForPercResult(form[index].percResult)),
                   ),
                 ),
                 Positioned(
@@ -145,7 +149,7 @@ class FormWidget extends StatelessWidget {
             Container(
               padding: const EdgeInsets.only(right: 10),
               child: Text(
-                  formList[index].percResult.toString() + r"%",
+                form[index].percResult.toString() + r"%",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18.0,
@@ -159,6 +163,16 @@ class FormWidget extends StatelessWidget {
     );
   }
 
-
+  String getImageForPercResult(int percResult) {
+    if (percResult >= 80 && percResult <= 100) {
+      return 'assets/images/plant-one.png';
+    } else if (percResult >= 50 && percResult < 80) {
+      return 'assets/images/plant-two.png';
+    } else if (percResult >= 25 && percResult < 50) {
+      return 'assets/images/plant-three.png';
+    } else {
+      return 'assets/images/plant-four.png';
+    }
+  }
 
 }

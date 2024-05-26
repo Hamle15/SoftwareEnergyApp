@@ -1,6 +1,8 @@
  import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:integrador/ApiServices/form_provider.dart';
 import 'package:integrador/constants.dart';
+import 'package:integrador/models/form.dart';
 import 'package:integrador/models/plants.dart';
 import 'package:integrador/ui/pages/cart_page.dart';
 import 'package:integrador/ui/pages/favorite_page.dart';
@@ -8,6 +10,7 @@ import 'package:integrador/ui/pages/home_page.dart';
 import 'package:integrador/ui/pages/profile_page.dart';
 import 'package:integrador/ui/scan_page.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 
 class RootPage extends StatefulWidget {
   const RootPage({super.key});
@@ -17,7 +20,7 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
-  List<Plant> favorities = [];
+  List<FormModel> favorities = [];
   List<Plant> myCart = [];
   int _bottomNavIndex = 0;
 
@@ -25,7 +28,7 @@ class _RootPageState extends State<RootPage> {
   List<Widget> _widgetOptions(){
     return [
       const HomePage(),
-      FavoritePage(favoritedPlants: favorities, ),
+      FavoritePage(favoritedForms: favorities, ),
       DynamicForm(),
       const ProfilePage(),
     ];
@@ -91,11 +94,8 @@ class _RootPageState extends State<RootPage> {
         onTap: (index){
           setState(() {
             _bottomNavIndex = index;
-            final List<Plant> favoritedPlants = Plant.getFavoritedPlants();
-            final List<Plant> addedToCartPlants = Plant.addedToCartPlants();
-
-            favorities = favoritedPlants;
-            myCart = addedToCartPlants.toSet().toList();
+            final formProvider = Provider.of<FormProvider>(context, listen: false);
+            favorities = formProvider.formList.where((form) => form.isFavorated).toList();
           });
         },
       ),
