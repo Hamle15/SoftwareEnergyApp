@@ -38,7 +38,7 @@ class _RootPageState extends State<RootPage> {
   List<IconData> iconList = [
     Icons.home,
     Icons.favorite,
-    Icons.shopping_cart,
+    Icons.edit,
     Icons.person
   ];
 
@@ -46,7 +46,7 @@ class _RootPageState extends State<RootPage> {
   List<String> titleList = [
     'Home',
     'Favorite',
-    'Cart',
+    'Form',
     'Profile',
   ];
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:integrador/ApiServices/form_provider.dart';
 import 'package:integrador/Providers/plant_provider.dart';
+import 'package:integrador/ui/onBoarding_screen.dart';
 import 'package:provider/provider.dart';
 import './ui/root_page.dart';
 
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
 
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: RootPage(),
+        home: OnBoardingScreen(),
       ),
     );
   }

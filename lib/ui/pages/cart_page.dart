@@ -24,7 +24,6 @@ class _DynamicFormState extends State<DynamicForm> {
   final String email = "hamletcruzpirazan@gmail.com";
 
   final List<IconData> icons = [
-    Icons.email,
     Icons.devices,
     Icons.computer,
     Icons.timer,
@@ -35,7 +34,8 @@ class _DynamicFormState extends State<DynamicForm> {
     Icons.schedule,
     Icons.update,
     Icons.energy_savings_leaf,
-    Icons.sync
+    Icons.sync,
+    Icons.energy_savings_leaf
   ];
 
   void _submitForm() async {
@@ -239,24 +239,21 @@ class _DynamicFormState extends State<DynamicForm> {
     Map<int, List<String>> pageHints = {
       0: [
         '20',
-        '20',
-        'Correo Electrónico',
-        'Dirección',
-        'Ocupación'
+        '5',
+        '5',
+        '5',
       ],
       1: [
-        'Correo Electrónico',
-        'Dirección',
-        'Ocupación',
-        'Número de Teléfono',
-        'Nombre'
+        '5',
+        '5',
+        '5',
+        '5',
       ],
       2: [
-        'Dirección',
-        'Ocupación',
-        'Número de Teléfono',
-        'Nombre',
-        'Correo Electrónico'
+        '5',
+        '5',
+        '2000',
+        '2000',
       ],
     };
     if (pageHints.containsKey(_currentPage)) {
@@ -271,21 +268,21 @@ class _DynamicFormState extends State<DynamicForm> {
     Map<int, List<String>> pageLabels = {
       0: [
         'Devices',
-        'Devices',
-        'Numero de computadores',
-        'Horas en el computador'
+        'Numbers of computers',
+        'Average horus on computers',
+        'Average years of computers use'
       ],
       1: [
-        'Tiempo promedio de años de los computadores',
-        'Numero de servers',
-        'Horas en los servers',
-        'Tiempo promedio de años en de los severs'
+        'Numbers of servers',
+        'Average horus on servers',
+        'Average years of servers use',
+        'Numbers of laptops'
       ],
       2: [
-        'Numero de laptops',
-        'Horas en las laptops',
-        'Timpo promedio de añs en las laptops',
-        'Energia usada total'
+        'Average horus on laptops',
+        'Average years of laptops',
+        'Energy consumed in watts',
+        'Energy consumed in watts',
       ],
     };
     if (pageLabels.containsKey(_currentPage)) {
